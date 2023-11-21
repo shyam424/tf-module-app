@@ -94,7 +94,7 @@ resource "aws_lb_target_group" "main" {
 
 #listener rule->
 
-resource "aws_lb_listener_rule" "static" {
+resource "aws_lb_listener_rule" "main" {
   listener_arn = var.listener
   priority     = var.lb_priority
 
