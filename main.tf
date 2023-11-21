@@ -106,7 +106,7 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     host_header {
-      values = ["$(var.component)-$(var.env).devopspractice23.online"]
+      values = ["${var.component}-${var.env}.devopspractice23.online"]
     }
   }
 }
