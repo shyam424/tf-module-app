@@ -39,11 +39,11 @@ resource "aws_launch_template" "main" {
   image_id      = data.aws_ami.ami.id
   instance_type = var.instance_type
   vpc_security_group_ids = aws_security_group.main.id]
-  user_data = filebase64(templatefile("${path.module}/userdata.sh"),
+  user_data = base64encode(templatefile("${path.module}/userdata.sh",
     {
       component = var.component
     }
-    )
+    ))
 
 #-launch template copied from EC2(elastic cloude compute->aws_launch_template)
 tag_specifications {
@@ -53,15 +53,41 @@ tag_specifications {
   }
 }
 
-#launch template ended
-resource "aws_autoscaling_group" "bar" {
-  availability_zones = ["us-east-1a"]
-  desired_capacity   = 1
-  max_size           = 1
-  min_size           = 1
+#launch template ended ,asg=auto scaling group
+resource "aws_autoscaling_group" "main" {
+
+  name = "${local.name_prefix}-asg"
+  vpc_zone_identifier = var.subnet_ids
+  desired_capacity   = var.desired_capacity
+  max_size           = var.max_size
+  min_size           = var.min_size
 
   launch_template {
-    id      = aws_launch_template.foobar.id
+    id      = aws_launch_template.main.id
     version = "$Latest"
   }
+  tag {
+    key                 = "Name"
+    value               = local.name_prefix
+    propagate_at_launch = true
+  }
 }
+
+
+#DNS Record
+resource "aws_route53_record" "main" {
+  zone_id = var.zone_id
+  name    = "${var.component}-${var.env}"
+  type    = "CNAME"
+  ttl     = 30
+  records = [var.lb_name]
+}
+
+#target group
+resource "aws_lb_target_group" "main" {
+  name     = local.name_prefix
+  port     = var.port
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+}
+
