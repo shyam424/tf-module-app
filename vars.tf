@@ -16,6 +16,7 @@ variable "private_listener" {}
 variable "lb_priority" {}
 variable "public_lb_name" {}
 variable "public_listener" {}
+variable "default_vpc_id" {}
 
 
 
