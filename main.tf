@@ -126,7 +126,7 @@ resource "aws_lb_target_group" "public" {
 }
 
 resource "aws_lb_target_group_attachment" "public" {
- ount               = var.component == "frontend" ? length(tolist(data.dns_a_record_set.private_lb.addrs)) : 0
+ count               = var.component == "frontend" ? length(tolist(data.dns_a_record_set.private_lb.addrs)) : 0
 #  count            = var.component == "frontend" ?  length(tolist(data.dns_a_record_set.private_lb.addrs)) : 0
   target_group_arn  = aws_lb_target_group.public[0].arn
 #  target_id        = element(tolist(data.dns_a_record_set.private_lb.addrs), count.index )
