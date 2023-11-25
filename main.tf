@@ -95,7 +95,7 @@ resource "aws_lb_target_group" "main" {
 }
 
 
-#listener rule->
+#listener rule except frontend->
 
 resource "aws_lb_listener_rule" "main" {
   listener_arn = var.private_listener
@@ -125,6 +125,7 @@ resource "aws_lb_target_group" "public" {
   vpc_id   = var.default_vpc_id
 }
 
+
 resource "aws_lb_target_group_attachment" "public" {
  count               = var.component == "frontend" ? length(tolist(data.dns_a_record_set.private_lb.addrs)) : 0
 #  count            = var.component == "frontend" ?  length(tolist(data.dns_a_record_set.private_lb.addrs)) : 0
@@ -134,4 +135,24 @@ resource "aws_lb_target_group_attachment" "public" {
   port              = 80
 #  availability_zone = "all"
   availability_zone = "all"
+}
+
+#listener rule for frontend->
+
+resource "aws_lb_listener_rule" "public" {
+  count        = var.component == "frontend" ? 1 : 0
+  listener_arn = var.private_listener
+  priority     = var.lb_priority
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.public[0].arn
+  }
+
+
+  condition {
+    host_header {
+      values = ["${var.env}.devopspractice23.online"]
+    }
+  }
 }
