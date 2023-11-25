@@ -7,3 +7,4 @@ data "aws_ami" "ami" {
 data "dns_a_record_set" "private_lb" {
   host  = var.private_lb_name
 }
+
