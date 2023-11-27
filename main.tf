@@ -161,9 +161,9 @@ resource "aws_lb_listener_rule" "public" {
 
 #Instance policies->
 resource "aws_iam_policy" "main" {
-  name        = "{local.name_prefix}-policy"
+  name        = "${local.name_prefix}-policy"
   path        = "/"
-  description = "{local.name_prefix}-policy"
+  description = "${local.name_prefix}-policy"
 
   policy = jsonencode({
     "Version": "2012-10-17",
@@ -191,7 +191,7 @@ resource "aws_iam_policy" "main" {
 
 
 resource "aws_iam_role" "main" {
-  name = "{local.name_prefix}-role"
+  name = "${local.name_prefix}-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
